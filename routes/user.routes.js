@@ -1,5 +1,6 @@
 
 const {Router} = require('express');
+const { check } = require('express-validator');
 
 const router = Router();
 
@@ -10,7 +11,12 @@ const { getUser,
   patchUser } = require('../controllers/user.controllers');
 
   
-router.post('/', postUser);
+router.post('/', [
+  check('name','the name cannot be empty').not().isEmpty(),
+  check('pass','the password to have more seix characteres').isLength({ min: 6}),
+  check('mail','the mail is not valid').isEmail(),
+  check('role','the role is not valid').isIn(['ADMIN_ROLE','USER_ROLE']),
+] , postUser);
 
 router.get('/',  getUser);
 

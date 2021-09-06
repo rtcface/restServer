@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { dbConnection } = require('../database/config.db')
  
 
 class Server {
@@ -8,6 +9,8 @@ class Server {
         this.app = express();
         this.port = process.env.PORT;
         this.pathUserRoute =  '/api/user';
+        //Connection to database
+        this.connectDb();
         // Middleware
         this.middlewares();
 
@@ -37,6 +40,10 @@ class Server {
         this.app.listen(this.port, () => {
             console.log(`Express Server run on port ${this.port}`);
         });
+    }
+
+    async connectDb(){
+        await dbConnection();  
     }
 
 }
