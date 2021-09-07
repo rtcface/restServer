@@ -1,7 +1,6 @@
 const User = require("../models/user");
-
+const { encryptPassword } = require("../helpers/db-validator");
 const bcryptjs = require('bcryptjs');
-
 
 
 const postUser = async(req = request, res = response) => {
@@ -12,9 +11,7 @@ const postUser = async(req = request, res = response) => {
 
   //encrypt the password
   const salt = bcryptjs.genSaltSync();
-
-  user.pass = bcryptjs.hashSync(pass,salt);
-
+  user.pass= bcryptjs.hashSync(pass,salt);
 
   await user.save();
   res.json({
@@ -36,13 +33,23 @@ const getUser = (req = request, res = response) => {
   });
 };
 
-const putUser = (req = request, res = response) => {
+const putUser = async(req = request, res = response) => {
   const { id } = req.params;
+  const { _id,pass,createByGoogle,mail, ...resto } = req.body;
+
+  //TODO: validate egainst database
+  if (pass) {
+    const salt = bcryptjs.genSaltSync();
+    resto.pass= bcryptjs.hashSync(pass,salt);  
+  }
+
+  const user = await User.findByIdAndUpdate(id,resto);
+
 
   res.json({
     ok: true,
     msg: "Put api- controllers",
-    id,
+    user,
   });
 };
 
