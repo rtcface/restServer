@@ -9,19 +9,21 @@ const { getUser,  putUser,  postUser,  deleteUser,  patchUser } = require('../co
 const { isValidRoles, mailExists, userById,userByRole } = require('../helpers/db-validator');
 const { fieldsValidation } = require('../middlewares/field-validator');
 
+// the routes
+
+router.get('/',  getUser);
   
+
 router.post('/', [
   check('name','the name cannot be empty').not().isEmpty(),
   check('pass','the password to have more seix characteres').isLength({ min: 6}),
   check('mail','the mail is not valid').isEmail(),  
   //check('role','the role is not valid').isIn(['ADMIN_ROLE','USER_ROLE']),
   check('role').custom( isValidRoles ),
-  check('mail').custom( mailExists ),
-  
+  check('mail').custom( mailExists ),  
   fieldsValidation
 ] , postUser);
 
-router.get('/',  getUser);
 
 router.put('/:id',[
   check('id','is not valid id').isMongoId(),
