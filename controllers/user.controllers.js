@@ -1,5 +1,4 @@
 const User = require("../models/user");
-const { encryptPassword } = require("../helpers/db-validator");
 const bcryptjs = require('bcryptjs');
 
 
@@ -21,15 +20,20 @@ const postUser = async(req = request, res = response) => {
   });
 };
 
-const getUser = (req = request, res = response) => {
-  const { key, user, pass } = req.query;
+const getUser = async(req = request, res = response) => {
+  //const { key, user, pass } = req.query;
+  const condition = { status: true}
+  const {limit = 5, from = 0} = req.query;
 
+  const [total,users] = await Promise.all([
+    User.countDocuments(condition),
+    User.find(condition)
+    .skip(Number(from))
+    .limit(Number(limit))    
+  ]) 
   res.json({
-    ok: true,
-    msg: "Get api - controllers",
-    key,
-    user,
-    pass,
+    total,
+    users
   });
 };
 
@@ -42,21 +46,15 @@ const putUser = async(req = request, res = response) => {
     const salt = bcryptjs.genSaltSync();
     resto.pass= bcryptjs.hashSync(pass,salt);  
   }
-
   const user = await User.findByIdAndUpdate(id,resto);
-
-
-  res.json({
-    ok: true,
-    msg: "Put api- controllers",
-    user,
-  });
+  res.json(user);
 };
 
-const deleteUser = (req = request, res = response) => {
+const deleteUser = async(req = request, res = response) => {
+  const { id } = req.params;
+  const user = await User.findByIdAndUpdate(id,{status: false});
   res.json({
-    ok: true,
-    msg: "delete api - controller ",
+   user
   });
 };
 const patchUser = (req = request, res = response) => {
