@@ -1,6 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 const UserSchema = Schema({
+   
     name: {
         type: String,
         required:[true,'Name user is necessary'],        
@@ -31,12 +32,12 @@ const UserSchema = Schema({
         default: false
     }
     
-    
 });
 
 
-UserSchema.methods.toJSON = function () {
-   const {__v,pass, ...user } = this.toObject();
+UserSchema.methods.toJSON = function () {   
+   const {__v,_id,pass, ...user } = this.toObject();
+    user.uid=_id;
     return user;
 }
 
