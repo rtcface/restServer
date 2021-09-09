@@ -8,6 +8,7 @@ const router = Router();
 const { getUser,  putUser,  postUser,  deleteUser,  patchUser } = require('../controllers/user.controllers');
 const { isValidRoles, mailExists, userById,userByRole } = require('../helpers/db-validator');
 const { fieldsValidation } = require('../middlewares/field-validator');
+const { validateJWT } = require('../middlewares/validate-jwt');
 
 // the routes
 
@@ -33,6 +34,7 @@ router.put('/:id',[
 ], putUser);
   
 router.delete('/:id',[
+  validateJWT,
   check('id','is not valid id').isMongoId(),
   check('id').custom( userById ),
   fieldsValidation

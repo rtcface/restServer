@@ -47,14 +47,18 @@ const putUser = async(req = request, res = response) => {
     resto.pass= bcryptjs.hashSync(pass,salt);  
   }
   const user = await User.findByIdAndUpdate(id,resto);
+  
+
   res.json(user);
 };
 
 const deleteUser = async(req = request, res = response) => {
   const { id } = req.params;
   const user = await User.findByIdAndUpdate(id,{status: false});
+  const autenticationUser = req.user;
   res.json({
-   user
+   user,
+   autenticationUser
   });
 };
 const patchUser = (req = request, res = response) => {
