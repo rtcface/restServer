@@ -9,6 +9,7 @@ const { getUser,  putUser,  postUser,  deleteUser,  patchUser } = require('../co
 const { isValidRoles, mailExists, userById,userByRole } = require('../helpers/db-validator');
 const { fieldsValidation } = require('../middlewares/field-validator');
 const { validateJWT } = require('../middlewares/validate-jwt');
+const { isAdminRole } = require('../middlewares/validator-role');
 
 // the routes
 
@@ -35,6 +36,7 @@ router.put('/:id',[
   
 router.delete('/:id',[
   validateJWT,
+  isAdminRole,
   check('id','is not valid id').isMongoId(),
   check('id').custom( userById ),
   fieldsValidation

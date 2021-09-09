@@ -12,8 +12,29 @@ const validateJWT = async(req= request, res = response, next) => {
     }
 
     try {
+
+        //Read user that corresponds to uid
         const { uid } = jsonwebtoken.verify(token,process.env.SECRETORPRIVATEKEY);
-        req.user = await User.findById( uid );
+        console.log(uid);
+        const user = await User.findById( uid );
+        req.user =user;
+       
+         //check if the user exists to database
+         if(!user){
+            return res.status(401).json({
+                message:'this user not exists to database', 
+            })
+        }
+
+
+        //check if the user is active
+        if(!user.status){
+            return res.status(401).json({
+                message:'this user is not active',
+            })
+        }
+
+
         next();
     } catch (error) {
         console.log(error);
