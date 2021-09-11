@@ -8,8 +8,13 @@ class Server {
     constructor(params) {
         this.app = express();
         this.port = process.env.PORT;
-        this.pathUserRoute =  '/api/user';
-        this.authPath = '/api/auth'; 
+        
+        this.paths = {
+            auth:       '/api/auth',
+            categories: '/api/categories',
+            users:      '/api/user',
+        };
+
         //Connection to database
         this.connectDb();
         // Middleware
@@ -32,10 +37,10 @@ class Server {
         this.app.use(express.static('public'));        
     }
 
-    routes() {
-        
-        this.app.use(this.authPath, require('../routes/auth.routes'));
-        this.app.use(this.pathUserRoute, require('../routes/user.routes'));
+    routes() {        
+        this.app.use(this.paths.auth, require('../routes/auth.routes'));
+        this.app.use(this.paths.categories, require('../routes/categories.routes'));        
+        this.app.use(this.paths.users, require('../routes/user.routes'));
     }
 
     listen(){
