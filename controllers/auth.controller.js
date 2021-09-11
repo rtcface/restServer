@@ -68,25 +68,42 @@ const googleSingin = async (req, res) => {
 
         }
 
-        const googlePayload = await googleVerify(id_token);
-        console.log(googlePayload);
+        const {name,img,mail} = await googleVerify(id_token);
         
+        let user = await   User.findOne({ mail });
+
+        if(!user) {
+            const data = {
+                name,
+                mail,
+                pass:'password',
+                img,
+                createByGoogle: true
+            };
+            user = new User(data);
+            await user.save();    
+        }
+
+        
+        //verify status in the user in local databae
+        if(!user.status){
+            return res.status(401).json({
+                message:'lock user contact to administrator'
+            });
+        }
+        
+        const token = await generateJWT( user.id ); 
+
         res.json({ 
-            message: " Login with Google successfully"
-            
-        })
+            user,
+            token    
+        });
 
     } catch (error) {
         
         res.status(400).json({ message: " google token is not valid" });
 
     }
-
-
-
-    if(id_token){
-    }
-
 }
 
 module.exports = {
