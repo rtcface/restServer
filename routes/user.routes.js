@@ -5,11 +5,21 @@ const { check } = require('express-validator');
 
 const router = Router();
 
-const { getUser,  putUser,  postUser,  deleteUser,  patchUser } = require('../controllers/user.controllers');
-const { isValidRoles, mailExists, userById,userByRole } = require('../helpers/db-validator');
+const { getUser,
+    putUser,
+    postUser,
+    deleteUser,
+    patchUser } = require('../controllers/user.controllers');
+
+const { isValidRoles,
+   mailExists,
+   userById,
+   userByRole } = require('../helpers/db-validator');
 
 // the middlewares
-const { fieldsValidation,validateJWT,haveRole } = require('../middlewares');
+const { fieldsValidation,
+  validateJWT,
+  haveRole } = require('../middlewares');
 
 // the routes
 

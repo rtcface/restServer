@@ -2,32 +2,54 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
+const { createCategories,
+    getCategories,
+    getCategory,
+    putCategories,
+    deleteCategories } = require('../controllers/categories.controllers');
+
+const { existsCategoryById,
+  existsCategoryName} = require('../helpers/db-validator');
+
 const router = Router();
 
-const { fieldsValidation } = require('../middlewares/field-validator');
+const { validateJWT,
+  fieldsValidation,
+  isAdminRole } = require('../middlewares');
 
 /* 
 *{{url}}/api/categories
 */
 //get all categories - public api
-router.get('/',( req, res ) => {    
-  return res.json('Get all categories');    
-});
+router.get('/', getCategories );
 //get categories for id - public api
-router.get('/:id',( req, res ) => {    
-  return res.json('Get categories for id');     
-});
+router.get('/:id',[
+  check('id','is not valid id').isMongoId(),
+  check('id').custom( existsCategoryById ),
+  fieldsValidation
+],getCategory);
 //create categories - private api - any whit valid token
-router.post('/',( req, res ) => {    
-  return res.json('Create categories');    
-});
+router.post('/',[ 
+  validateJWT,
+check('name','the name of the category is required').not().isEmpty(),
+fieldsValidation
+ ],createCategories);
 //update categories - private api - any whit valid token
-router.put('/:id',( req, res ) => {    
-  return res.json('Update categories');    
-});
+router.put('/:id',[
+  validateJWT,
+  check('name','the name of the category is required').not().isEmpty(),
+  check('id','is not valid id').isMongoId(),
+  check('id').custom( existsCategoryById  ),
+  check('name').custom( existsCategoryName ),
+  fieldsValidation
+],putCategories);
 //delete categories - only ADMIN_ROLE
-router.delete('/:id',( req, res ) => {    
-  return res.json('Delete categories');    
-});
+router.delete('/:id',[
+  validateJWT,
+  isAdminRole,
+  check('id','is not valid id').isMongoId(),
+  check('id').custom( existsCategoryById  ),
+  fieldsValidation
+],deleteCategories);
 
 module.exports = router;
