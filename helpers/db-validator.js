@@ -1,6 +1,7 @@
 const Role = require("../models/role");
 const User = require("../models/user");
 const Category = require("../models/category");
+const Product = require("../models/product");
 
 const isValidRoles = async (role = "") => {
   const existsRole = await Role.findOne({ role });
@@ -50,8 +51,22 @@ const existsCategoryById = async (id) => {
   }
 };
 
+//check if exist Product 
+const existsProductById = async (id) => {
+  const validCat = await Product.findById( id );
+  if (!validCat) {
+    throw new Error(`the id: ${id} is not  exists DB`);
+  }
+};
 
-
+//check if exist Category Name
+const existsProductName = async (name) => {
+  const productName= name.toUpperCase(); 
+  const validProductName = await Product.findOne({ name:productName });
+  if (validProductName) {
+    throw new Error(`the product name:${ productName } is already in use`);
+  }
+};
 
 module.exports = {
   isValidRoles,
@@ -59,5 +74,7 @@ module.exports = {
   userById,
   userByRole,
   existsCategoryById,
-  existsCategoryName
+  existsCategoryName,
+  existsProductById,
+  existsProductName
 };
