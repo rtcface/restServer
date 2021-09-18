@@ -1,42 +1,75 @@
-const {response} = require('express');
-const path = require('path');
-import { v4 as uuidv4 } from 'uuid';
+const { response } = require("express");
+const path = require("path");
+const fs = require('fs');
 
+const { fileUpload } = require("../helpers");
+const { User, Product } = require("../models");
+const uploadFile = async (req, res = response) => { 
 
-const uploadFile =  ( req, res=response ) => {
+  try {
 
- 
+    const nameFile = await fileUpload(req.files, undefined, "img");
+    res.json({ nameFile });
+  } catch (msg) {
+    res.status(400).json({ msg });
+  }
+};
 
-  // res.json(
-  //   {message:'prueba'}
-  // )
+const updatePicture = async (req, res = response) => { 
+  
+  const { collection, id } = req.params;
 
-    if (!req.files || Object.keys(req.files).length === 0 || !req.files.file) {
-      res.status(400).json({message:'No files were uploaded.'});
-      return;
-    }
-     
-      const {file} = req.files;
-      const cutName = file.name.split('.');
-      const ext = cutName[ cutName.length - 1];
-      const validExtension = ['jpg','png','gif','jpeg'];
+  let model;
 
-      if(!validExtension.includes(ext)){
-        res.status(400).json({message: 'Invalid extension'});
+  switch (collection) {
+    case "users":
+      model = await User.findById(id);
+      if (!model) {
+        return res
+          .status(400)
+          .json({ message: `the id: ${id} in the database not found` });
       }
+      break;
 
-    // const uploadPath = path.join(__dirname,'../uploads/', file.name);
-  
-    // file.mv(uploadPath, (err) =>  {
-    //   if (err) {
-    //     return res.status(500).json({err});
-    //   }
-  
-    //   res.json({message:'File uploaded to ' + uploadPath});
-    // });
+    case "products":
+      model = await Product.findById(id);
+      if (!model) {
+        return res
+          .status(400)
+          .json({ message: `the id: ${id} in the database not found` });
+      }
+      break;
 
-}
+    default:
+      res
+        .status(500)
+        .json({ message: "This model is not available temporarily" });
+      break;
+  }
+
+  // deleted images previously
+
+  if(model.img){
+    const imgPath= path.join(__dirname, '../uploads', collection, model.img);
+
+    if(fs.existsSync(imgPath)){
+      fs.unlinkSync(imgPath);
+    }
+
+  }
+
+
+  const nameFile = await fileUpload(req.files, undefined, collection);
+  model.img = nameFile;
+
+  await model.save();
+
+  res.json({
+    model,
+  });
+};
 
 module.exports = {
-    uploadFile
+  uploadFile,
+  updatePicture,
 };

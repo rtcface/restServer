@@ -68,6 +68,18 @@ const existsProductName = async (name) => {
   }
 };
 
+// validation of collections allowed
+
+const allowedCollections = ( collection='', collections=[] ) =>{
+
+    const include = collections.includes(collection);
+    if(!include){
+      throw new Error(`the collection ${collection} is not allowed, ${collections}`)
+    }
+
+    return true;
+}
+
 module.exports = {
   isValidRoles,
   mailExists,
@@ -76,5 +88,6 @@ module.exports = {
   existsCategoryById,
   existsCategoryName,
   existsProductById,
-  existsProductName
+  existsProductName,
+  allowedCollections,
 };
