@@ -109,9 +109,17 @@ const getFiles = async (req, res = response) => {
   // deleted images previously
 
   if(model.img){
+    
+  //  const resp= cloudinary.image(model.img, {type: "fetch", transformation: [
+  //     {gravity: "face", height: 300, width: 300, crop: "fill"},
+  //     {radius: "max"},
+  //     {fetch_format: "auto"}
+  //     ]});
 
-    return res.sendFile(model.img);
-    // const imgPath= path.join(__dirname, '../uploads', collection, model.img);
+  //     console.log(res);
+    //const imgPath= path.relative(model.img);
+
+    return res.send(model.img);
 
     // if(fs.existsSync(imgPath)){
     //   return res.sendFile(imgPath);
@@ -119,6 +127,8 @@ const getFiles = async (req, res = response) => {
 
   }
    const assetsImg=path.join(__dirname,'../assets/no-image.jpg');
+   
+   
    return res.sendFile(assetsImg);
 
   // res.json({
