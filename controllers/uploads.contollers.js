@@ -109,11 +109,13 @@ const getFiles = async (req, res = response) => {
   // deleted images previously
 
   if(model.img){
-    const imgPath= path.join(__dirname, '../uploads', collection, model.img);
 
-    if(fs.existsSync(imgPath)){
-      return res.sendFile(imgPath);
-    }
+    return res.sendFile(model.img);
+    // const imgPath= path.join(__dirname, '../uploads', collection, model.img);
+
+    // if(fs.existsSync(imgPath)){
+    //   return res.sendFile(imgPath);
+    // }
 
   }
    const assetsImg=path.join(__dirname,'../assets/no-image.jpg');
