@@ -1,11 +1,11 @@
 
 const { Router } = require('express');
 const { check } = require('express-validator');
-const {uploadFile, updatePicture} = require('../controllers/uploads.contollers');
+const {uploadFile, updatePicture, getFiles} = require('../controllers/uploads.contollers');
 
 const { fieldsValidation, fileValidator } = require('../middlewares');
 
-const { allowedCollections } = require('../helpers')
+const { allowedCollections } = require('../helpers');
 
 
 const router = Router();
@@ -23,6 +23,11 @@ router.put('/:collection/:id',[
     check('collection').custom( c => allowedCollections( c, ['users','products'] )  ),
     fieldsValidation
 ],updatePicture );
+
+
+router.get('/:collection/:id',[
+  
+],getFiles);
 
 
 
