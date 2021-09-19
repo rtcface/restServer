@@ -160,11 +160,11 @@ const updatePictureCloudinary = async (req, res = response) => {
   // deleted images previously
 
   if(model.img){
-    // const imgPath= path.join(__dirname, '../uploads', collection, model.img);
+    const nameArray = model.img.split('/');
+    const name = nameArray[nameArray.length - 1];
+    const [ publicId ] = name.split('.');
 
-    // if(fs.existsSync(imgPath)){
-    //   fs.unlinkSync(imgPath);
-    // }
+    cloudinary.uploader.destroy(publicId);
   }
 
 
