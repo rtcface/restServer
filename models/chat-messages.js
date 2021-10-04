@@ -1,9 +1,11 @@
 class Message {
-    constructor(uid,name,message,) {
+    constructor(uid,name,message,img, date) {
 
         this.uid = uid;
         this.name = name;
         this.message = message;
+        this.img = img;
+        this.date = date;
         
     }
 }
@@ -29,9 +31,9 @@ class ChatMessages {
         return Object.values(this.users);
     }
 
-    sendMessage( uid, name, message,){
+    sendMessage( uid, name, message, img, date){
         this.messages.unshift(
-            new Message(uid, name, message)
+            new Message(uid, name, message, img, date)
         );
     }
 

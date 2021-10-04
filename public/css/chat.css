@@ -160,6 +160,8 @@ border-radius: 25px;
 background-color: #82ccdd;
 padding: 10px;
 position: relative;
+min-width: 45px;
+
 }
 .msg_cotainer_send{
 margin-top: auto;
@@ -169,6 +171,7 @@ border-radius: 25px;
 background-color: #78e08f;
 padding: 10px;
 position: relative;
+min-width: 45px;
 }
 .msg_time{
 position: absolute;
@@ -183,6 +186,7 @@ right:0;
 bottom: -15px;
 color: rgba(255,255,255,0.5);
 font-size: 10px;
+
 }
 .msg_head{
 position: relative;
